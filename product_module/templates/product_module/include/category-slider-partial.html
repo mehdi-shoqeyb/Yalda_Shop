@@ -1,0 +1,38 @@
+<section class="slider-category free-swiper">
+    <div class="container-fluid position-relative">
+
+        <div class="product-slider-box-title">
+            <h4 class="title-font product-slider-box-title-title dot">
+                <span class="main-color-one-color">دسته</span>
+                <span>بندی</span>
+            </h4>
+        </div>
+
+        <div class="swiper cat-slider">
+            <div class="swiper-wrapper">
+                {% for category in categories %}
+                <div class="swiper-slide">
+                    <a href="{% url 'product-categories-list' cat=category.url_title  %}">
+                        <div class="category-card-item ">
+                            {% if category.image %}
+                            <div class="category-card-item-image">
+                                <img src="{{ category.image.url }}" alt="">
+                            </div>
+                            {% endif %}
+                            <div class="category-card-item-title">
+                                <h3 class="fw-bold text-overflow-1 h6">
+                                    <span class="main-color-one-color">کالای</span>
+                                    <span class="text-dark">{{ category.title }}</span>
+                                </h3>
+                                <span class="d-inline-block mt-2">مشاهده <i class="bi bi-arrow-left ms-1"></i></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>

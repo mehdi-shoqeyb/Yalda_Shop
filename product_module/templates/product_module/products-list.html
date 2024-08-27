@@ -1,0 +1,255 @@
+{% extends 'shared/_layout.html' %}
+{% load poll_extras %}
+
+{% block title %}لیست محصولات{% endblock title %}
+
+{% block content %}
+
+<!--============ start slider category ==============-->
+
+{% include "product_module/include/category-slider-partial.html" %}
+
+
+<!--============ end slider category ==============-->
+
+
+<!--============ start main content ==============-->
+
+<section class="content my-25">
+    <div class="container-fluid">
+
+        <div class="row gy-3">
+            <div class="col-lg-3 d-lg-block d-none">
+                <div class="filter-items position-sticky top-0">
+                    <div class="container-fluid">
+                        <form id="priceForm" action="" method="get">
+                            <div class="filter-item">
+                                <h5 class="filter-item-title">جستجو</h5>
+                                <div class="filter-item-content">
+                                    <div class="search-form">
+                                        <div class="search-filed">
+                                            <label>
+                                                <input name='search'type="text" placeholder="جستجوی محصولات ..." class="form-control search-input">
+                                            </label>
+                                            <button type="submit" class="btn search-btn main-color-one-bg rounded-pill"><i class="bi bi-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <h5 class="filter-item-title">دسته بندی ها</h5>
+                                <div class="filter-item-content">
+                                    {% for tag in tags %}
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-3">
+                                        <div class="form-check">
+                                            <label for="tagCheck{{ forloop.counter }}" class="form-check-label">
+                                                {{ tag.caption }}
+                                            </label>
+                                            <input type="checkbox" name="tags" id="tagCheck{{ forloop.counter }}" value="{{ tag.url_title }}"
+                                                   class="form-check-input" {% if tag.url_title in selected_tags %}checked{% endif %} />
+                                        </div>
+                                        <div>
+                                            <span class="fw-bold font-14">({{ tag.product_count }})</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="filter-item">
+                                <h5 class="filter-item-title">قیمت</h5>
+                                <div class="filter-item-content">
+                                        <div class="form-group">
+                                            <label class="d-block">
+                                                <input type="range" class="catRange" name="range[]">
+                                            </label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label class="d-block">
+                                                    <input type="number" name="" min="{{start_price}}"
+                                                           class="form-control input-range-filter" placeholder="از {{start_price|three_digits_currency}}">
+                                                </label>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="d-block" for=""><input type="number" name="" id="" min="{{start_price}}" max="{{db_max_price}}"
+                                                                     class="form-control input-range-filter"
+                                                                     placeholder="از {{end_price|three_digits_currency}}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="sorted" id="sorted" value="">
+                            <input type="hidden" name="page" id="page" value="">
+                            <input type="hidden" name="start_price" id="start_price" value="">
+                            <input type="hidden" name="end_price" id="end_price" value="">
+                            <div class="filter-item text-center">
+                                <button type="submit" class="btn-outline-site">اعمال فیلتر</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="col-lg-9">
+                <div class="category-sort mb-3">
+                    <div class="content-box">
+                        <div class="container-fluid">
+                            <div class="box_filter d-lg-block d-none">
+                                <ul class="list-inline text-start mb-0">
+                                    <li class="list-inline-item fw-bold ms-0">مرتب سازی بر اساس :</li>
+                                    <li class="list-inline-item"><a {% if request.GET.sort == '-price' %}class="active_custom"{% endif %} href="{{request.path}}?sort=-price">گران ترین</a></li>
+                                    <li class="list-inline-item"><a {% if request.GET.sort == 'price' %}class="active_custom"{% endif %} href="{{request.path}}?sort=price">ارزان ترین</a>
+                                    </li>
+                                    <li class="list-inline-item"><a {% if request.GET.sort == '-sales_count' %}class="active_custom"{% endif %} href="{{request.path}}?sort=-sales_count">پروفروش ترین</a></li>
+                                    <li class="list-inline-item"><a {% if request.GET.sort == '-view_count' %}class="active_custom"{% endif %} href="{{request.path}}?sort=-view_count">داغ ترین</a></li>
+                                    <li class="list-inline-item"><a {% if request.GET.sort == 'discounts' %}class="active_custom"{% endif %} href="{{request.path}}?sort=discounts">تخفیف خرده</a></li>
+                                </ul>
+                            </div>
+                            <div class="d-lg-none d-block">
+                                <form method="get" action="{{ request.path }}" id="sortForm">
+                                    {% for key, value in request.GET.items %}
+                                        {% if key != 'sort' %}
+                                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                        {% endif %}
+                                    {% endfor %}
+                                    <h5 class="mb-3">مرتب سازی بر اساس</h5>
+                                    <label for="sort"></label>
+                                    <select name="sort" id="sort" class="form-select" onchange="this.form.submit()">
+                                        <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %} >گران ترین</option>
+                                        <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>ارزان ترین</option>
+                                        <option value="-sales_count" {% if request.GET.sort == '-sales_count' %}selected{% endif %}>پرفروش ترین</option>
+                                        <option value="-view_count" {% if request.GET.sort == '-view_count' %}selected{% endif %}>داغ ترین</option>
+                                        <option value="discounts" {% if request.GET.sort == 'discounts' %}selected{% endif %}> تخفیف خرده</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-items">
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            {% for product in products %}
+                            {% include "product_module/include/product-item-partial.html" %}
+                            {% endfor %}
+                        </div>    
+                        <div class="col-12">
+                            <div class="my-paginate my-4">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination flex-wrap justify-content-center">
+                                        {% if page_obj.has_previous %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link rounded-3" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+                                        </li>
+                                        {% endif %}
+                                        {% for number in paginator.page_range %}
+                                        <li class="page-item">
+                                            <a class="page-link rounded-3 {% if page_obj.number == number %}active{% endif %}" href="?page={{ number }}">{{number}}</a></li>
+                                        </li>
+                                        {% endfor %}
+                                        {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link rounded-3" href="?page={{ page_obj.next_page_number }}">بعدی</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        // Function to format numbers as currency
+        function formatCurrency(value) {
+            return value.toLocaleString('fa-IR') + ' تومان';
+        }
+    
+        // Get the form containing the price filter
+        var priceForm = $("#priceForm");
+    
+        // Initialize the slider
+        priceForm.find(".catRange").slider({
+            id: "slider5b",
+            min: 0,
+            max: {{ db_max_price }},
+            range: true,
+            step: 10000,
+            value: [{{ start_price }}, {{ end_price }}], // Initial values
+            rtl: true, // Set rtl to true if needed
+            formatter: function (val) {
+                if (Array.isArray(val)) {
+                    return formatCurrency(val[0]) + " تا " + formatCurrency(val[1]);
+                } else {
+                    return formatCurrency(val);
+                }
+            }
+        }).on('change', function (event) {
+            // Update hidden input fields when slider value changes
+            var newValues = event.value.newValue;
+            priceForm.find("#start_price").val(newValues[0]);
+            priceForm.find("#end_price").val(newValues[1]);
+    
+            // Update display values
+            priceForm.find(".slider-range-label").text(formatCurrency(newValues[0]) + " تا " + formatCurrency(newValues[1]));
+        });
+    
+        // Ensure form submission includes these values
+        priceForm.on('submit', function () {
+            // Get current values of the slider
+            var sliderValues = priceForm.find(".catRange").slider('getValue');
+            priceForm.find("#start_price").val(sliderValues[0]);
+            priceForm.find("#end_price").val(sliderValues[1]);
+    
+            // Remove the range[] input value to avoid submitting it
+            priceForm.find("input[name='range[]']").remove();
+        });
+    
+        // Set initial values to the hidden inputs and update display values
+        priceForm.find("#start_price").val({{ start_price }});
+        priceForm.find("#end_price").val({{ end_price }});
+        priceForm.find(".slider-range-label").text(formatCurrency({{ start_price }}) + " تا " + formatCurrency({{ end_price }}));
+    });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to get query parameters
+            function getQueryParams() {
+                const params = new URLSearchParams(window.location.search);
+                let query = '';
+                for (const [key, value] of params) {
+                    if (key !== 'page') {
+                        query += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
+                    }
+                }
+                return query;
+            }
+        
+            // Update pagination links with query parameters
+            function updatePaginationLinks() {
+                const queryParams = getQueryParams();
+                const paginationLinks = document.querySelectorAll('.pagination a');
+                paginationLinks.forEach(link => {
+                    const href = new URL(link.getAttribute('href'), window.location.href);
+                    href.search = queryParams + `page=${href.searchParams.get('page')}`;
+                    link.setAttribute('href', href.toString());
+                });
+            }
+        
+            // Initial update of pagination links
+            updatePaginationLinks();
+        });
+                
+</script>
+
+<!--============ end main content ==============-->
+
+{% endblock content %}

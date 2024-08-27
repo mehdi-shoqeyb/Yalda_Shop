@@ -1,0 +1,180 @@
+{% extends "shared/_layout.html" %}
+
+{% block title %}پنل کاربری{% endblock title %}
+<!--============ start main content ==============-->
+{% block content %}
+<section class="content my-25">
+    <div class="container-fluid">
+        <div class="row">
+            {% include "user_panel_module/include/profile-sidebar.html" %}
+            <div class="col-lg-9">
+                <div class="product-slider-box-title">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 col-6">
+                            <h4 class="title-font product-slider-box-title-title dot">
+                                <span class="main-color-one-color">ویرایش</span>
+                                <span>پروفایل</span>
+                            </h4>
+                        </div>
+                        <div class="col-lg-4 col-6">
+                            <div class="text-end">
+                                <a href="" data-bs-toggle="modal" data-bs-target="#editModal"
+                                   class="btn main-color-one-bg rounded-3"><i class="bi bi-pencil-square"></i>
+                                    ویرایش</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded-4 slider-parent">
+                    <div class="card-body">
+                        <div class="account-settings d-flex align-items-center">
+                            <div class="user-profile d-flex align-items-center">
+                                <div class="user-avatar">
+                                    <img src="{% if  user.profile_picture%}
+                                    {{user.profile_picture.url}}
+                                    {% else %}
+                                    /static/assets/image/user.png
+                                    {% endif %}">
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="user-name font-15">{{user.username}}</h5>
+                                    <p class="user-email text-muted font-14">{{user.email}}</p>
+                                </div>
+                            </div>
+                            <form class="w-100 ms-4" id='profile-picture-form' method='post' action="{% url 'user-panel-info' %}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="uploadProfile" class="form-label">بارگذاری عکس پروفایل</label>
+                                    {% csrf_token %}
+                                    {% for field in picture_form %}
+                                    {{field}}
+                                    {{field.errors}}
+                                    {% endfor %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-custom slider-parent bg-transparent p-0">
+                    <div class="table-responsive shadow-box roundedTable p-0">
+                        <table class="table main-table rounded-0">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <h6 class="fw-bold font-15 text-muted ">نام و نام خانوادگی:</h6>
+                                    <p class=" mt-2 font-14">{% if user.first_name %}{{user.first_name}} {{user.last_name}}{% else %}-{% endif %}</p>
+                                </td>
+                                <td>
+                                    <h6 class="text-muted fw-bold font-15 ">شماره تلفن:</h6>
+                                    <p class=" mt-2 font-14">{% if user.phone_number %}{{user.phone_number}}{% else %}-{% endif %}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h6 class="fw-bold font-15 text-muted">پست الکترونیک:</h6>
+                                    <p class=" mt-2 font-14">{% if user.email %}{{user.email}}{% else %}-{% endif %}</p>
+                                </td>
+                                <td class="no-border">
+                                    <h6 class="fw-bold font-15 text-muted">کد ملی:</h6>
+                                    <p class=" mt-2 font-14">{% if user.national_code %}{{user.national_code}}{% else %}-{% endif %}</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="no-border">
+                                    <h6 class="fw-bold font-15  text-muted">آدرس: </h6>
+                                    <p class=" mt-2 font-14">{% if user.address %}{{user.address}}{% else %}-{% endif %}</p>
+                                </td>
+                                <td colspan="2">
+                                    <h6 class="fw-bold font-15 text-muted">جنسیت:</h6>
+                                    <p class=" mt-2 font-14">{% if user.gender == True %} آقا {% elif user.gender == True %} خانم {% else %}-{% endif %}</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--============ end main content ==============-->
+
+<!--============ start edit profile modal ==============-->
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">ویرایش پروفایل</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method='post' action="{% url 'user-panel-info' %}">
+                    {% csrf_token %}
+                    <div class="row g-4">
+                        {% for field in info_form %}
+                        {% if forloop.counter <= 2 %}
+                        <div class="col-md-6">
+                            <div class="comment-item">
+                                {{field.errors}}
+                                {{field}}
+                                <label for="floatingInputName" class="form-label label-float fw-bold font-16">{{field.label}}
+                                    <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <div class="col-12">
+                            <div class="comment-item">
+                                {{field.errors}}
+                                {{field}}
+                                <label for="floatingInputStreet" class="form-label label-float fw-bold">
+                                    {{field.label}}
+                                </label>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if forloop.counter == 4 or forloop.counter == 5 %}
+                        <div class="col-md-6">
+                            <div class="comment-item">
+                                {{field.errors}}
+                                {{field}}
+                                <label for="floatingInputName" class="form-label label-float fw-bold font-16">{{field.label}}
+                                    <span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                        <div class="col-12">
+                            <div class="comment-item">
+                                {{field.errors}}
+                                {{field}}
+                                <label for="floatingInputStreet" class="form-label label-float fw-bold">
+                                    {{field.label}}
+                                </label>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <div class="col-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn main-color-one-bg border-0">
+                                    ویرایش پروفایل
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Assuming the file input has an ID like 'id_profile_picture'
+    document.querySelector('#uploadProfile').addEventListener('change', function() {
+        document.querySelector('#profile-picture-form').submit();
+    });
+</script>
+<!--============ end edit profile modal ==============-->
+{% endblock content %}

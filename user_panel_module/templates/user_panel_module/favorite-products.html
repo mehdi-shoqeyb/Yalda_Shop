@@ -1,0 +1,88 @@
+{% extends "shared/_layout.html" %}
+{% load poll_extras %}
+
+{% block title %}پنل کاربری{% endblock title %}
+
+{% block content %}
+
+<!--============ start main content ==============-->
+
+<section class="content my-25">
+    <div class="container-fluid">
+        <div class="row">
+            {% include "user_panel_module/include/profile-sidebar.html" %}
+            <div class="col-lg-9">
+                <div class="product-slider-box-title">
+                    <h4 class="title-font product-slider-box-title-title dot">
+                        <span class="main-color-one-color">محصولات</span>
+                        <span>مورد علاقه</span>
+                    </h4>
+                </div>
+                <div class="slider-parent rounded-4 border-ui p-3">
+                    <nav class="navbar navbar-expand">
+                        <ul class="row navbar-nav gy-3 ps-0">
+                            {% for product in favorites %}
+                            <li class="col-sm-6">
+                                <div class="cart-canvas border rounded-3 p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-4 ps-0">
+                                            <img src="{{product.image.url}}" alt="">
+                                        </div>
+                                        <div class="col-8">
+                                            <h3 class="text-overflow-2 font-16">
+                                                {{product.short_description}}
+                                            </h3>
+                                            <div class="product-box-suggest-price my-2  d-flex align-items-center justify-content-between">
+                                                <ins class="font-25 ms-0">{{product.price|three_digits_currency}}<span>تومان</span></ins>
+                                            </div>
+                                            <div class="cart-canvas-foot d-flex align-items-center justify-content-between">
+                                                <div class="cart-canvas-delete">
+                                                    <form id="delete-form" method="post" action="{% url 'user-panel-favorite-products' %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" id="product_id" name="product_id" value=""/>
+                                                    </form>
+                                                    
+                                                    <a href="javascript:void(0);" onclick="fillProductId({{product.id}})" class="btn">
+                                                        <i  class="bi bi-x"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                    <div class="my-paginate my-4">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination flex-wrap justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item disabled">
+                                    <a class="page-link rounded-3" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+                                </li>
+                                {% endif %}
+                                {% for number in paginator.page_range %}
+                                <li class="page-item"><a class="page-link rounded-3 {% if page_obj.number == number %}active{% endif %}" href="?page={{ number }}">{{number}}</a></li>
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link rounded-3" href="?page={{ page_obj.next_page_number }}">بعدی</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block footer_references %}
+
+<script src="/static/assets/js/product.js"></script>
+{% endblock footer_references %}
+<!--============ end main content ==============-->
+{% endblock content %}

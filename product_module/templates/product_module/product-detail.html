@@ -1,0 +1,909 @@
+{% extends 'shared/_layout.html' %}
+{% load poll_extras %}
+{% block header_references %}
+<link rel="stylesheet" href="/static/assets/plugin/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css">
+<link href="/static/assets/plugin/tagify/tagify.css" rel="stylesheet">
+{% endblock header_references %}
+
+<!--============ start header ==============-->
+
+{% block content %}
+    <!--============ start main content ==============-->
+
+<section class="content">
+
+    <section class="bread-crumb py-0 my-4">
+        <div class="container-fluid">
+            <div class="content-box">
+                <div class="container-fluid">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home-page' %}" class="font-14 text-muted">خانه</a></li>
+                            <li class="breadcrumb-item">دسته بندی</li>
+                            <li class="breadcrumb-item"><a href="{% url 'product-categories-list' cat=product.category.url_title %}" class="font-14 text-muted">{{product.category.title}}</a></li>
+                            <li class="breadcrumb-item active main-color-one-color font-14" aria-current="page">
+                                {{product.title}}
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container-fluid">
+        <div class="content-box">
+            <div class="container-fluid">
+                <div class="row gy-3">
+                    <div class="col-xl-4 col-lg-3">
+                        <div class="pro_gallery">
+                            <div class="icon-product-box">
+                                <form method='post' action="{% url 'add-product-to-favorite' %}" name='add-to-favorite-form' id='add-to-favorite-form'>
+                                    {% csrf_token %}
+                                    <input name="favorite-product-id" id="favorite-product-id" type='hidden' value='' />
+                                </form>
+                                <div class="icon-product-box-item" data-bs-toggle="tooltip" data-bs-placement="right"
+                                     data-bs-title="افزودن به علاقه مندی"
+                                     {% if request.user.is_authenticated %}onclick='fillProductIdToFavorite("{{product.id}}")'{% endif %}
+                                     >
+                                    <i class="bi bi-heart{% if favorite_exists %}-fill{% endif%}"></i>
+                                </div>
+                                <div class="icon-product-box-item" data-bs-toggle="modal" data-bs-target="#chartModal"
+                                     data-toggle="tooltip" data-bs-placement="right" title="نمودار تغییر قیمت">
+                                    <i class="bi bi-bar-chart" ></i>
+                                </div>
+                            </div>
+
+                            <div class="swiper product-gallery">
+                                <div class="swiper-wrapper" title="برای بزرگنمایی تصویر دابل کلیک کنید">
+                                    {% for gallery in product_galleries %}
+                                    <div class="swiper-slide">
+                                        <div class="swiper-zoom-container">
+                                            <img class="img-fluid" src="{{gallery.image.url}}"alt=""/>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+
+                                </div>
+                                <div class="swiper-pagination d-none d-lg-block"></div>
+                            </div>
+
+                            <div class="swiper product-gallery-thumb">
+                                <div class="swiper-wrapper">
+                                    {% for gallery in  product_galleries%}
+                                    <div class="swiper-slide">
+                                        <img class="img-fluid" src="{{gallery.image.url}}" alt=""/>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-lg-9">
+                        <div class="product-meta-title">
+                            <div class="row align-items-center gy-3">
+                                <div class="col-lg-8">
+                                    <h5 class="font-16">
+                                        {{product.title}}
+                                    </h5>
+                                    <p class="mb-0 mt-2 text-muted">
+                                        {{product.short_description}}
+                                    </p>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <a href="">
+                                            <img src="{{product.brand.image.url}}" alt="" class="img-fluid">
+                                        </a>
+                                        <a href=""
+                                           class="btn no-highlight bs-bg-gray-300 rounded-pill font-14 d-flex align-items-center ms-3"
+                                           data-bs-toggle="modal" data-bs-target="#shareModal"><i
+                                                class="bi font-18 bi-share me-2"></i>اشتراک گذاری</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-meta-rating my-3">
+                            <div class="d-flex align-items-center">
+                                <a class="badge danger-label btn btn-lg rounded-pill font-16">{{product.category.title}}</a>
+                                <div class="d-flex align-items-center ms-4">
+                                    <div class="d-flex flex-column me-3">
+                                        <h6 class="text-end">{{product.rate|convert_float_to_fraction}}</h6>
+                                        <p class="text-muted lh-sm font-14">میانگین امتیاز</p>
+                                    </div>
+                                    <div class="rating-star"><i class="bi bi-star-fill bs-text-orange-500 font-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gy-4 my-4">
+                            <div class="col-lg-8">
+                                <div class="product-meta-feature-items">
+                                    <h5 class="title font-16 mb-2 icon-circle">ویژگی های کالا</h5>
+                                    <ul class="navbar-nav">
+                                        
+                                        {% for key, value in features.items %}
+                                                <li class="nav item"><span>{{ key }}:</span><strong>{{ value }}</strong></li>
+                                            {% endfor %}
+                                       
+                                    </ul>
+                                </div>
+                                <div class="product-meta-color mt-4">
+                                    <h5 class="font-16 icon-circle">
+                                        انتخاب رنگ کالا
+                                    </h5>
+                                    
+                                    <div class="product-meta-color-items">
+                                        {% for color in product.get_colors %}
+                                            <input type="radio" class="btn-check" name="options" id="option{{forloop.counter}}"
+                                                autocomplete="off"
+                                                checked value="{{ color }}">
+                                            <label class="btn " for="option{{forloop.counter}}">
+                                                <span style="background-color: {{color|color_to_english}};"></span>
+                                                {{color}}
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="d-flex flex-column">
+                                    <div class="bs-bg-gray-200 mb-3 rounded-3 py-3 border border-dark-subtle d-flex align-items-center justify-content-center">
+                                        <img src="/static/assets/image/feature/fast.png" class="w-40-px" alt="">
+                                        <h6 class="fw-bold ms-4">ارســال رایــگان</h6>
+                                    </div>
+                                    <div class="bs-bg-gray-200 mb-3 rounded-3 py-3 border border-dark-subtle d-flex align-items-center justify-content-center">
+                                        <img src="/static/assets/image/feature/badge.png" class="w-40-px" alt="">
+                                        <h6 class="fw-bold ms-4">ضمــانــت اصــالــت کالا</h6>
+                                    </div>
+                                    <div class="bs-bg-gray-200 mb-3 rounded-3 py-3 border border-dark-subtle d-flex flex-column align-items-center justify-content-center">
+                                        <h6 class="fw-bold h3 d-flex align-items-center ms-4">
+                                            {% if product.discount_price %}
+                                            {{product.discount_price|three_digits_currency}}
+                                            {% else %}
+                                            {{product.price|three_digits_currency}}
+                                            {% endif %}
+                                            <span
+                                                class="h6 ms-2 fw-normal">تومان</span></h6>
+                                        <form 
+                                              class="w-100 d-flex flex-column justify-content-center align-items-center mt-3">
+                                            <div class="counter">
+                                                <label>
+                                                    {% csrf_token %}
+                                                    <input type='hidden' name="count-product-id" value='{{product.id}}' />
+                                                    <input type="text" name="count" class="counter" value="1">
+                                                </label>
+                                            </div>
+                                            <button type='submit' id='add-to-basket-button' href=""
+                                                    class="btn main-color-green btn-add-to-cart text-white  mt-3"><i
+                                                    class="bi bi-basket me-3 lh-sm fs-4"></i> افزودن به سبد خرید
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--============ end main content ==============-->
+
+<!--============ start product description ==============-->
+
+<section class="product-desc my-3">
+    <div class="container-fluid">
+        <div class="product-desc-tab">
+            <ul class="nav justify-content-between" id="productTab" role="tablist">
+                <li class="nav-item">
+                    <button aria-selected="true" class="active waves-effect waves-light"
+                            data-bs-target="#productDescLess-pane" data-bs-toggle="tab" id="productDescLess"
+                            role="button" type="button">
+                            معرفی کالا
+                        </button>
+                </li>
+                <li class="nav-item">
+                    <button aria-selected="false" class=" waves-effect waves-light"
+                            data-bs-target="#productTable-pane" data-bs-toggle="tab" id="productTable"
+                            role="button" type="button">
+                        ویژگی های کالا
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button aria-selected="false" class="d-flex waves-effect waves-light"
+                            data-bs-target="#productComment-pane" data-bs-toggle="tab" id="productComment"
+                            role="button" type="button">
+                        نظرات <span class="badge main-color-two-bg ms-2 lh-sm">{{comments_count}}</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button aria-selected="false" class="d-flex waves-effect waves-light"
+                            data-bs-target="#productAnswer-pane" data-bs-toggle="tab" id="productAnswer"
+                            role="button" type="button">
+                        پرسش و پاسخ <span class="badge main-color-two-bg ms-2 lh-sm">{{QAA_total_count}}</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="row mt-4 pt-2">
+            <div class="col-xl-9">
+                <div class="content-box">
+                    <div class="container-fluid">
+                        <div class="product-descs" id="prodesc">
+                            <div class="product-desc">
+                                <div class="product-desc-tab-content">
+                                    <div class="tab-content" id="productTabContent">
+                                        <div class="tab-pane fade show active product-desc-less-contents"
+                                             id="productDescLess-pane">
+                                            <div class="product-desc-content">
+                                                <h6 class="font-22 mb-2 title-font title-line-bottom">معرفی محصول</h6>
+
+                                                <p>
+                                                   {% if product.description %}
+                                                   {{product.description}}
+                                                   {% else %}
+                                                   معرفی ای برای این محصول موجود نمی باشد
+                                                   {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="productTable-pane">
+                                            <div aria-labelledby="#productTable"
+                                                 class="tab-pane fade active show" role="tabpanel">
+                                                <h6 class="font-26 mb-2 title-font title-line-bottom">مشخصات فنی</h6>
+                                                {% for key,value in  product.get_features.items %}
+                                                <div class="box_list mt-4">
+                                                    <div>
+                                                        <ul class="param_list list-inline">
+                                                            <li class="list-inline-item col-md-3 pe-md-1 pe-md-3 p-0 m-0">
+                                                                <div class="box_params_list">
+                                                                    <p class="block border_right_custom1">
+                                                                        {{key}}
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-inline-item col-md-8 p-0 m-0">
+                                                                <div class="box_params_list">
+                                                                    <p class="block border_right_custom2">
+                                                                        {{value}}
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade product-comment-content" id="productComment-pane">
+
+                                            <div class="comment-form">
+                                                <h6 class="font-26 mb-2 title-font title-line-bottom">نظرت در مورد این
+                                                    محصول
+                                                    چیه؟</h6>
+                                                <p class="font-14 text-muted mt-2">برای ثبت نظر، از طریق دکمه افزودن
+                                                    دیدگاه جدید
+                                                    نمایید. اگر این محصول را قبلا خریده باشید، نظر شما به عنوان خریدار
+                                                    ثبت خواهد
+                                                    شد.</p>
+                                                <form id='comment-form'>
+                                                    {% csrf_token %}
+                                                    <div class="row gy-4">
+                                                        <div class="col-md-4">
+                                                            <div class="product-rateing position-sticky top-0">
+                                                                <div class="row gy-2 align-items-center">
+                                                                    <div class="number">
+                                                                        <h4 class="fw-light">متوسط امتیاز ها</h4>
+                                                                        <h2 id="productRate" >{{product.rate}}</h2>
+                                                                        <div class="star" id="starRating" >
+                                                                            <i class="bi bi-star"></i>
+                                                                            <i class="bi bi-star"></i>
+                                                                            <i class="bi bi-star"></i>
+                                                                            <i class="bi bi-star"></i>
+                                                                            <i class="bi bi-star"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="prog-rating">
+                                                                        <div class="item w-100 mb-2">
+                                                                            <div class="d-flex align-items-center flex-wrap">
+                                                                                <span class="font-14">5 ستاره</span>
+                                                                                <div class="progress flex-grow-1 mx-2"
+                                                                                     style="height: 7px;">
+                                                                                    <div aria-valuemax="100"
+                                                                                         aria-valuemin="0"
+                                                                                         aria-valuenow="{{rates_detail.5_star }}"
+                                                                                         class="progress-bar"
+                                                                                         role="progressbar"
+                                                                                         style="width:{{rates_percentages.5_star}}%"></div>
+                                                                                </div>
+                                                                                <span class="font-14">{{rates_detail.5_star }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item w-100 mb-2">
+                                                                            <div class="d-flex align-items-center flex-wrap">
+                                                                                <span class="font-14">4 ستاره</span>
+                                                                                <div class="progress flex-grow-1 mx-2"
+                                                                                     style="height: 7px;">
+                                                                                    <div aria-valuemax="100"
+                                                                                         aria-valuemin="0"
+                                                                                         aria-valuenow="{{rates_detail.4_star }}"
+                                                                                         class="progress-bar"
+                                                                                         role="progressbar"
+                                                                                         style="width:{{rates_percentages.4_star}}%"></div>
+                                                                                </div>
+                                                                                <span class="font-14">{{rates_detail.4_star }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item w-100 mb-2">
+                                                                            <div class="d-flex align-items-center flex-wrap">
+                                                                                <span class="font-14">3 ستاره</span>
+                                                                                <div class="progress flex-grow-1 mx-2"
+                                                                                     style="height: 7px;">
+                                                                                    <div aria-valuemax="100"
+                                                                                         aria-valuemin="0"
+                                                                                         aria-valuenow="{{rates_detail.3_star }}"
+                                                                                         class="progress-bar"
+                                                                                         role="progressbar"
+                                                                                         style="width:{{rates_percentages.3_star}}%"></div>
+                                                                                </div>
+                                                                                <span class="font-14">{{rates_detail.3_star }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item w-100 mb-2">
+                                                                            <div class="d-flex align-items-center flex-wrap">
+                                                                                <span class="font-14">2 ستاره</span>
+                                                                                <div class="progress flex-grow-1 mx-2"
+                                                                                     style="height: 7px;">
+                                                                                    <div aria-valuemax="100"
+                                                                                         aria-valuemin="0"
+                                                                                         aria-valuenow="{{rates_detail.2_star }}"
+                                                                                         class="progress-bar"
+                                                                                         role="progressbar"
+                                                                                         style="width:{{rates_percentages.2_star}}%"></div>
+                                                                                </div>
+                                                                                <span class="font-14">{{rates_detail.2_star }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item w-100">
+                                                                            <div class="d-flex align-items-center flex-wrap">
+                                                                                <span class="font-14">1 ستاره</span>
+                                                                                <div class="progress flex-grow-1 mx-2"
+                                                                                     style="height: 7px;">
+                                                                                    <div aria-valuemax="100"
+                                                                                         aria-valuemin="0"
+                                                                                         aria-valuenow="{{rates_detail.1_star }}"
+                                                                                         class="progress-bar"
+                                                                                         role="progressbar"
+                                                                                         style="width:{{rates_percentages.1_star}}%"></div>
+                                                                                </div>
+                                                                                <span class="font-14">{{rates_detail.1_star }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% if request.user.is_authenticated %}
+                                                        <div class="col-md-8">
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label class="my-3" for="commentRating">امتیاز
+                                                                            شما</label>
+                                                                        <fieldset class="rating" id="commentRating">
+                                                                            <input id="star5" name="rating" required
+                                                                                   type="radio"
+                                                                                   value="5"/>
+                                                                            <label for="star5">5 stars</label>
+                                                                            <input id="star4" name="rating" required
+                                                                                   type="radio"
+                                                                                   value="4"/>
+                                                                            <label for="star4">4 stars</label>
+                                                                            <input id="star3" name="rating" required
+                                                                                   type="radio"
+                                                                                   value="3"/>
+                                                                            <label for="star3">3 stars</label>
+                                                                            <input id="star2" name="rating" required
+                                                                                   type="radio"
+                                                                                   value="2"/>
+                                                                            <label for="star2">2 stars</label>
+                                                                            <input id="star1" name="rating" required
+                                                                                   type="radio"
+                                                                                   value="1"/>
+                                                                            <label for="star1">1 star</label>
+                                                                        </fieldset>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <div class="form-floating">
+                                                            <textarea name='comment-text' id='comment-text' class="form-control"
+                                                                      id="floatingTextarea2"
+                                                                      placeholder="Leave a comment here"
+                                                                      style="height: 150px" required></textarea>
+                                                                        <label for="floatingTextarea2">متن نظر!</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group mt-3">
+                                                                        <label class="text-success mb-2 fw-bold font-16"
+                                                                               for="tags-pos">نقاط
+                                                                            قوت</label>
+                                                                        <input class="commentTags form-control"
+                                                                               id="tags-pos"
+                                                                               name="tags-pos"
+                                                                               placeholder="با کلید اینتر اضافه کنید">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group mt-3">
+                                                                        <label class="text-danger fw-bold mb-2 font-16"
+                                                                               for="tags-neg">نقاط
+                                                                            ضعف</label>
+                                                                        <input class="commentTags form-control"
+                                                                               id="tags-neg"
+                                                                               name="tags-neg"
+                                                                               placeholder="با کلید اینتر اضافه کنید">
+                                                                    </div>
+                                                                </div>
+                                                                <input type='hidden' name='product_id' id='product_id' value='{{product.id}}'/>
+                                                                <div class="col-12">
+                                                                    <button type="submit"
+                                                                            class="btn main-color-two-bg px-5 btn-lg border-0">
+                                                                        ثبت نظر
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% else %}
+                                                        <a href="{% url 'login-page' %}">برای مشارکت در نظرات باید به حساب کاربری خود وارد شوید</a>
+                                                        {% endif %}
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="box_filter mt-5 pb-3">
+                                                <div class="row align-items-end">
+                                                    <div class="col-md-4 bf1">
+                                                        <h4 class="title-font title-line-bottom">نظرات کاربران</h4>
+                                                    </div>
+                                                    <div class="col-md-8 bf2">
+                                                        <ul class="list-inline text-end mb-0">
+                                                            <li class="list-inline-item title-font">مرتب سازی بر اساس
+                                                                :
+                                                            </li>
+                                                            <li class="list-inline-item"><a {% if request.GET.sort == 'buyer' %}class="active_custom"{% endif %}
+                                                                href="{{request.path}}?sort=buyer">نظر خریداران</a>
+                                                            </li>
+                                                            <li class="list-inline-item"><a {% if request.GET.sort == '-likes' %}class="active_custom"{% endif %}
+                                                                                            href="{{request.path}}?sort=-likes">مفیدترین
+                                                                نظرات</a>
+                                                            </li>
+                                                            <li class="list-inline-item"><a {% if request.GET.sort == '-created_date' %}class="active_custom"{% endif %}
+                                                                href="{{request.path}}?sort=-created_date">جدیدترین نظرات</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% for comment in comments %}
+                                            <div class="box_users_comment mt-3 p-4">
+                                                <div class="row">
+                                                    <div class="col-lg-3">
+                                                        <div class="box_message_light">
+                                                            <svg class="bi bi-cart3" fill="currentColor" height="16"
+                                                                 viewBox="0 0 16 16" width="16"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
+                                                            </svg>
+                                                            خریدار این محصول
+                                                        </div>
+                                                        {% if comment.rate < 2 %}
+                                                        <div class="box_message_dislike mt-2">
+                                                            <i class="bi bi-hand-thumbs-down"></i>
+                                                         خرید این محصول را توصیه نمیکنم
+                                                        </div>
+                                                        {% else %} 
+                                                        <div class="box_message_dislike text-success mt-2">
+                                                            <i class="bi bi-hand-thumbs-up"></i>
+                                                            خرید این محصول را توصیه می
+                                                            کنم
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-lg-9 pr-5" style="margin-top:-10px">
+                                                        <div class="box_comment_header mt-4 mt-lg-0">
+                                                            
+                                                            <br>
+                                                            <span class="span2">توسط {{comment.user.username}} در تاریخ {{comment.created_date}}
+                                                </span>
+                                                        </div>
+                                                        <div class="border-bottom mt-3"></div>
+                                                        <div class="row mt-4">
+                                                            <div class="col-md-6 evaluation-positive">
+                                                                <div class="list-inline">
+                                                                    <span>نقاط قوت :</span>
+                                                                    <div class="list-inline-item ml-3">
+                                                                        {% if comment.pros is not none %}{{comment.pros}}{% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 evaluation-negative">
+                                                                <div class="list-inline">
+                                                                    <span>نقاط ضعف :</span>
+                                                                    <div class="list-inline-item ml-3">
+                                                                        {% if comment.cons is not none %}{{comment.cons}}{% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-4">
+                                                            <div class="col-md-12">
+                                                                <p class="box_text_comment">
+                                                                    {{comment.comment}}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row justify-content-end">
+                                                            <div class="col-12">
+                                                                <div class="comments_likes">
+                                                        <span class="mr-4 mt-1">
+                                                            ایا این نظر برایتان مفید بود ؟
+                                                        </span>
+                                                                    <a class="btn btn-like btn-like-like mt-1 mt-md-0 ms-2"
+                                                                        href="#"
+                                                                        data-comment-id="{{ comment.id }}"
+                                                                        data-opinion="like">
+                                                                        <i class="bi bi-hand-thumbs-up"></i> 
+                                                                        {{comment.total_likes}}
+                                                                    </a>
+                                                                    <a class="btn btn-like btn-like-dislike mt-1 mt-md-0"
+                                                                    href="#"
+                                                                    data-comment-id="{{ comment.id }}"
+                                                                    data-opinion="dislike">
+                                                                     <i class="bi bi-hand-thumbs-down"></i> {{ comment.total_dislikes }}
+                                                                 </a>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+
+                                        <div aria-labelledby="#productAnswer" class="tab-pane fade"
+                                             id="productAnswer-pane"
+                                             role="tabpanel">
+                                            <h4 class="title-font title-line-bottom">پرسش و پاسخ</h4>
+                                            <span class="fw-bold d-block mt-2 text-muted font-12">پرسش خود را در مورد محصول مطرح
+                                نمایید  </span>
+
+                                            <div class="box_questions mt-4">
+                                                <form id='qaa-form' >
+                                                    <div class="form-group">
+                                                        {% if request.user.is_authenticated %}
+                                                        <label class="d-block">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="product_id" id='product_id' value="{{ product.id }}">
+                                                            <textarea name='text' id='text' class="form-control"
+                                                                      placeholder="هر سوالی در مورد این محصول به ذهنتان میرسید بپرسید!"
+                                                                      rows="7"></textarea>
+                                                        </label>
+                                                        <button class="btn main-color-three-bg mt-3 btn-lg"
+                                                                type="submit">ثبت پرسش
+                                                        </button>
+                                                        {% else %}
+                                                        <a href="{% url 'login-page' %}">برای مشارکت در پرسش و پاسخ باید به حساب کاربری خود وارد شوید</a>
+                                                        {% endif %}
+                                                    </div>
+                                                </form>
+
+                                                <div class="box_filter mt-5 pb-3">
+                                                    <div class="row align-items-end">
+                                                        <div class="col-md-4 bf1">
+                                                            <h4 class="title-font title-line-bottom">پرسش های
+                                                                کاربران</h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {% for question in questions %}
+                                                <div class="box_questions mt-4">
+                                                    <div class="row bs-qu">
+                                                        <div class="col-lg-2 bq1 text-center">
+                                                            <i class="bi bi-question-circle-fill"></i>
+                                                            <br>
+                                                            <span class="span1">پرسش</span>
+                                                            <br>
+                                                            <span class="span2">{{question.user.username}}</span>
+                                                        </div>
+                                                        <div class="col-lg-10 bq2">
+                                                            <p>{{question.text}}</p>
+
+                                                            <div class="row bq-footer">
+                                                                <div class="col-md-5 col-6 my-flex-align-end">
+                                                                <span class="date"> {{question.created_date}}
+                                                                </span>
+                                                                </div>
+                                                                <div class="col-md-7 col-6 text-end pe-0">
+                                                                    <a class="d-none d-sm-block" href="#">
+                                                                        <span class="main-color-one-color" onclick="fillParenId({{question.id}})" >به این پرسش پاسخ دهید ({{question.answers_count}} پاسخ)</span>
+                                                                    </a><a class="d-sm-none d-block" href="#">پاسخ</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% for answer in question.question_answers.all %}
+                                                    <div class="row bs-qu">
+                                                        <div class="col-lg-2 bq1 text-center">
+                                                            <i class="bi bi-chat-dots-fill"></i>
+                                                            <br>
+                                                            <span class="span1">پاسخ</span>
+                                                            <br>
+                                                            <span class="span2">{{answer.user.username}}</span>
+                                                        </div>
+                                                        <div class="col-lg-10 bq2 bg-transparent">
+                                                            <p>
+                                                                {{answer.text}}
+                                                            </p>
+                                                            <div class="row align-items-center bq-footer">
+                                                                <div class="col-lg-5 col-12 my-flex-align-end">
+                                                                <span class="date">{{answer.created_date}}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 d-xl-block d-none">
+                <div class="product-meta-info bg-white position-sticky top-0">
+                    <div class="product-meta-info-title border-0 product-meta-info-item d-flex align-items-center justify-content-between">
+                        <h5>محصول</h5>
+                    </div>
+                    <div class="d-flex product-meta-info-item">
+                        <div>
+                            
+                        </div>
+                        <div class="text-start ms-3">
+                            <h6 class="fw-bold text-muted-2 font-16">{{product.title}}</h6>
+                            <div class="d-flex align-items-center mt-2">
+                                <p class="font-12 mb-0">
+                                    <span class="text-success ms-1 fw-bold">{{product.satisfaction}}%</span>
+                                    <span class="text-muted">رضایت از کالا</span>
+                                </p>
+                                <p class="ps-1 mb-0 ms-1 border-start font-12">
+                                    <span class="text-muted">عملکرد</span>
+                                    {% if product.satisfaction >= 75  %}
+                                    <span class="text-success fw-bold">عالی</span>
+                                    {% elif product.satisfaction >= 50  %}
+                                    <span class="text-success fw-bold">خوب</span>
+                                    {% elif product.satisfaction >= 25 %}
+                                    <span class="text-warning fw-bold">بد</span>
+                                    {% else %}
+                                    <span class="text-danger fw-bold">خیلی بد</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 product-meta-info-item py-3 d-flex align-items-center justify-content-start">
+                        <img src="{{product.image.url}}" class="d-block text-start w-25" alt="">
+                        <h6 class="fw-bold font-14 text-start ms-2">
+                            {{product.short_description}}
+                        </h6>
+                    </div>
+                    <div class="d-flex product-meta-info-item justify-content-between align-items-center my-3">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex me-3">
+                                <p class="text-muted lh-sm font-14">میانگین امتیاز</p>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <h6 class="text-end me-2">{{product.rate|convert_float_to_fraction}}</h6>
+                                <div class="rating-star"><i class="bi bi-star-fill bs-text-orange-500 font-16"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <a href="">
+                                <img src="{{product.brand.image.url}}" alt="" class="w-75 img-fluid">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="bs-bg-gray-200 product-meta-info-item mb-3 rounded-3 py-3 border border-dark-subtle d-flex flex-column align-items-center justify-content-center">
+                        <h6 class="fw-bold h3 d-flex align-items-center ms-4">
+                            {% if product.discount_price %}
+                            {{product.discount_price|three_digits_currency}}                                {% else %}
+                            {{product.price|three_digits_currency}}
+                            {% endif %}
+                            <span class="h6 ms-2 fw-normal">تومان</span>
+                        </h6>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--============ end product description ==============-->
+
+<!--============ start product slider ==============-->
+
+{% if realated_proucts %}
+<section class="product-slider  site-slider">
+    <div class="container-fluid">
+        <div class="product-slider-box-title">
+            <div class="row align-items-center">
+                <div class="col-lg-8 col-6">
+                    <h4 class="title-font product-slider-box-title-title dot">
+                        <span class="main-color-one-color">محصولات</span>
+                        <span>مرتبط</span>
+                    </h4>
+                </div>
+                <div class="col-lg-4 col-6">
+                    <div class="text-end">
+                        <a href="" class="btn main-color-one-bg rounded-3">مشاهده همه</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper pro-slider">
+            <div class="swiper-wrapper align-items-center">
+                <div class="swiper-slide">
+                    {% for product in realated_proucts %}
+                        {% include "product_module/include/product-item-partial.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!--============ end product slider ==============-->
+
+
+<!--============ start share modal ==============-->
+
+<section class="share-modal py-0">
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalLabel">اشتراک گذاری</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="font-14 my-3">این کالا را با دوستان خود به اشتراک بگذارید!</h4>
+                    <button type="button" class="btn my-3 btnCopy d-block text-center main-color-one-bg w-100"
+                            id="liveToastBtn">
+                        <i class="bi bi-clipboard text-white me-1"></i>
+                        کپی کردن لینک
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--============ end share modal ==============-->
+
+<!--============ start chart modal ==============-->
+
+<section class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-comment-title">
+                    <h5 class="modal-title fw-bold text-muted-2">نمودار قیمت فروش
+                    </h5>
+                    <p class="text-muted mt-1 font-14">گوشی موبایل اپل مدل iPhone 11 تک سیم‌ کارت ظرفیت 128 گیگابایت
+                        و رم 4 گیگابایت - هند
+                    </p>
+                </div>
+                <button type="button" class="btn-close waves-effect waves-light" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect waves-light"
+                        data-bs-dismiss="modal">بستن
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--============ end chart modal ==============-->
+
+
+<!-- These scripts are specific to this page   -->
+{% block footer_references %}
+<script src="/static/assets/plugin/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+<script src="/static/assets/plugin/tagify/jQuery.tagify.min.js"></script>
+<script src="/static/assets/plugin/chartjs/chart.js"></script>
+<script src="/static/assets/js/product.js"></script>
+{% endblock footer_references %}
+
+
+
+<!-- initial chart -->
+<script>
+    const ctx = document.getElementById('myChart');
+    Chart.defaults.font.family = "dana";
+    Chart.defaults.font.size = 16;
+
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['23 مهر 1401', '11 آبان 1401', '4 آذر 1401', '11 دی 1401', '5 بهمن 1401',
+                '19 اسفند 1401'
+            ],
+            datasets: [{
+                label: 'iphone 12 promax 256',
+                data: [1500000, 1700000, 1900000, 1400000, 1600000, 3200000],
+                borderWidth: 4,
+                borderColor: '#007fee',
+                pointBackgroundColor: '#fff',
+                pointRadius: 10,
+                pointHoverRadius: 15,
+                tension: 0.1,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: false,
+                    text: () => 'نمودار فروش محصول: ' + 'ایفون 12 pro max',
+                },
+            }
+        }
+    });
+</script>
+
+<!-- initial tag for comment section -->
+<script>
+    $(document).ready(function () {
+        $('.commentTags').tagify();
+    });
+</script>
+
+<!-- initial counter product for product add to cart section -->
+<script>
+    $(document).ready(function () {
+        $("input[name='count']").TouchSpin({
+            min: 1,
+            max: '10',
+            buttondown_class: "btn-counter waves-effect waves-light",
+            buttonup_class: "btn-counter waves-effect waves-light"
+        });
+    });
+</script>
+
+
+{% endblock content %}

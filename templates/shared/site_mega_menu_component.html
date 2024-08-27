@@ -1,0 +1,72 @@
+<div class="mega d-lg-block d-none position-sticky top-0 start-0 end-0">
+   <div class="container-fluid">
+       <div class="top-menu-parent p-3 rounded-pill shadow-box d-flex bg-white">
+           <div class="row w-100 align-items-center">
+               <div class="col-lg-9">
+                   <div class="top-menu-menu">
+                       <ul class="navbar-nav align-items-center">
+                           <li class="position-relative m-0"></li>
+                           <li class="nav-item main-menu-head">
+                               <a href=""
+                                  class="nav-link main-color-one-bg px-3 py-2 rounded-pill btn nav-active fw-bold">
+                                            <span class="d-inline-block rounded-circle bg-white">
+                                                <i class="bi bi-ui-checks-grid main-color-one-color fix-icon me-2"></i>
+                                            </span>
+                                   مگا تب منو
+                               </a>
+                               <ul class="main-menu mega-container">
+                                   {% for category in categories %}
+                                    <li class="main-menu-sub-active-li">
+                                        <a href="{% url 'product-categories-list' cat=category.url_title %}"><i class="bi bi-{{category.icon_name}}"></i>{{category.title}}</a>
+                                        <ul class="main-menu-sub back-menu" style=" {% if category.image %} background: #fff url('{{category.image.url}}') no-repeat;{% endif %}">
+                                            <li>
+                                                <a class="title my-flex-baseline">برند های مختلف {{category.title}}
+                                                </a>
+                                            </li>
+                                            {% for brand in category.brands_categories.all %}
+                                            <li>
+                                                <a href="{% url 'product-brands-list' cat=category.url_title brand=brand.url_title %}">{{brand.title}}</a>
+                                            </li>
+                                            {% endfor %}
+                                            <li>
+                                                <a class="title my-flex-baseline">{{category.title}} بر اساس قیمت</a>
+                                            </li>
+                                            {% for filter in price_filters %}
+                                            <li>
+                                                <a href="{% url 'product-categories-list' cat=category.url_title %}?end_price={{filter.max_price}}">{{filter.title}}</a>
+                                            </li>
+                                            {% endfor %}
+                                            {% for tag in category.tag_categories.all %}
+                                            <li>
+                                                <a {% if tag.is_parent %}class="title my-flex-baseline"{% else %} {% endif %}
+                                                    {% if not tag.is_parent %}href="{% url 'product-tags-list' cat=category.url_title tag=tag.url_title %}"{% endif %}>{{tag.caption}}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                   {% endfor %}
+                               </ul>
+                           </li>
+                           <li class="nav-item">
+                               <a href="{% url 'product-list' %}?sort=discounts" class="nav-link bg-white px-3 py-2 rounded-pill btn no-highlight border border-2 fw-bold">
+                                            <span class="d-inline-block rounded-circle main-color-two-bg">
+                                                <i class="bi bi-tag me-2"></i>
+                                            </span>
+                                   تخفیف ها و پیشنهاد ها
+                                   <span class="badge main-color-two-bg ms-1 rounded-pill">روزانه</span>
+                               </a>
+                           </li>
+                            <li class="nav-item">
+                                <a href="{% url 'contact-us-page' %}" class="nav-link border-animate fromCenter">
+                                    سوالی دارید
+                                </a>
+                            </li>
+                       </ul>
+                   </div>
+               </div>
+               
+           </div>
+       </div>
+   </div>
+</div>

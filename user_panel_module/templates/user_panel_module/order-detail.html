@@ -1,0 +1,145 @@
+{% extends "shared/_layout.html" %}
+<!--============ start main content ==============-->
+
+<section class="content my-25">
+    <div class="container-fluid">
+        <div class="row">
+            {% include "user_panel_module/include/profile-sidebar.html" %}
+            <div class="col-lg-9">
+                <div class="product-slider-box-title">
+                    <h4 class="title-font product-slider-box-title-title dot">
+                        <span class="main-color-one-color">جزئیات</span>
+                        <span>سفارش <small class="font-16 text-muted ms-2">{{order.order_code}}</small></span>
+                    </h4>
+                </div>
+                <div class="shoping-proccess rounded-4 border-ui py-5 pb-2 slider-parent">
+                    <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+                        <div class="step completed">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="bi bi-cart-check fs-2"></i></div>
+                            </div>
+                            <h4 class="step-title">سفارش تایید شده</h4>
+                        </div>
+                        <div class="step completed">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="bi bi-gear fs-2"></i></div>
+                            </div>
+                            <h4 class="step-title">پردازش سفارش</h4>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="bi bi-bus-front fs-2"></i></div>
+                            </div>
+                            <h4 class="step-title">تحویل به پست</h4>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon-wrap">
+                                <div class="step-icon"><i class="fs-2 bi bi-house-check"></i></div>
+                            </div>
+                            <h4 class="step-title">تحویل داده شده</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="orders-item">
+                    <div class="ui-boxs">
+                        <div class="ui-box">
+                            <div class="ui-box-item border-ui slider-parent ui-box-white">
+                                <div class="ui-box-item-desc p-0">
+                                    <div class="orders">
+                                        <div class="order-item">
+                                            <div class="order-item-detail">
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">کد پیگیری سفارش</span>
+                                                        <strong>{{order.order_code}}</strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">تاریخ ثبت سفارش</span>
+                                                        <strong>{{order.order_date}}</strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="order-item-detail">
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">تحویل گیرنده</span>
+                                                        <strong>{{order.user.username}}</strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">شماره موبایل </span>
+                                                        <strong>{{order.user.phone_number}}</strong>
+                                                    </li>
+                                                    <li class="nav-item w-100">
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">آدرس</span>
+                                                        <strong>{{order.user.address}}</strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="order-item-detail">
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">مبلغ</span>
+                                                        <strong>{{order.final_price|three_digits_currency}} تومان</strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <strong>پرداخت اینترنتی</strong>
+                                                    </li>
+                                                    <li class="nav-item w-100">
+                                                    </li>
+                                                    {% if order.discount_code %}
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">کد تخفیف</span>
+                                                        <strong>{{order.discount_code}} تومان</strong>
+                                                    </li>
+                                                    {% endif %}
+                                                    <li class="nav-item">
+                                                <span class="text-mute">
+                                                  هزینه ارسال براساس وزن و حجم
+                                                </span>
+                                                        <strong>{{delivery_price|three_digits_currency}} تومان</strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="order-item-detail">
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <strong>مرسوله</strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <strong class="text-danger">ارسال عادی</strong>
+                                                    </li>
+                                                    <li class="nav-item w-100">
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">زمان تحویل</span>
+                                                        <strong>{{order.delivery_date}} {{order.delivery_time_range}}
+                                                        </strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">هزینه ارسال</span>
+                                                        <strong>{{delivery_price|three_digits_currency}} تومان</strong>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <span class="text-mute">مبلغ مرسوله </span>
+                                                        <strong>{{delivery_price|three_digits_currency}} تومان</strong>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="order-item-detail">
+                                                <a href="factor.html" class="btn main-color-one-bg mb-3">چاپ فاکتور</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--============ end main content ==============-->

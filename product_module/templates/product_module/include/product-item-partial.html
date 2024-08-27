@@ -1,0 +1,46 @@
+{% load poll_extras %}
+<div class="product-box">
+    <div class="product-image">
+        <img alt="" class="img-fluid"
+            src="{{ product.image.url }}">
+    </div>
+    <div class="product-title">
+        <div class="title">
+            <p class="title-font font-14">
+                {% if product.short_description %}
+                    {{ product.short_description}}
+                {% else %}
+                    {{ product.title}}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="product-action flex-column mt-3">
+        <div class="price d-flex justify-content-between w-100 align-items-baseline">
+            {% if product.discount_price is not none %}
+            <p class="new-price">{{product.discount_price|three_digits_currency}}
+                <span class="font-12">تومان</span>
+            </p>
+            <p class="old-price">{{product.price|three_digits_currency}}
+                <span class="font-12">تومان</span>
+            </p>
+            {% else %}
+            <p class="new-price">{{product.price|three_digits_currency}}
+                <span class="font-12">تومان</span>
+            </p>
+            {% endif %}
+            
+        </div>
+        <div class="link w-100 mt-4 d-flex align-items-center justify-content-between">
+            <a class="btn border-0 d-flex align-items-center rounded-3 main-color-one-bg"
+               href="{{product.get_absolute_url}}">
+                مشاهده
+                <i class="bi bi-arrow-left ms-4 text-white"></i>
+            </a>
+            <a class="btn border-0 d-flex align-items-center rounded-3 main-color-two-bg"
+               href=""  data-product-id="{{ product.id }}">
+                <i class="bi bi-plus fs-5 text-white"></i>
+            </a>
+        </div>
+    </div>
+</div>

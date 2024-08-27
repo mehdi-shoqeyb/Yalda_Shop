@@ -1,0 +1,25 @@
+{% load render_partial %}
+<!DOCTYPE html>
+
+<html lang="fa_IR" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    {% include 'shared/header_references.html' %}
+    {% block header_references %}{% endblock %}
+</head>
+<body>
+    {% render_partial 'home_module.views.site_header_component' %}
+    {% render_partial 'home_module.views.site_mega_menu_component' %}
+    <script src="/static/assets/js/jquery-3.7.1.min.js"></script>
+    {% block content %}{% endblock %}
+    {% include 'shared/footer_references.html' %} 
+    {% render_partial 'home_module.views.site_footer_component' %}
+    {% block footer_references %}{% endblock %}
+</body>
+</html>

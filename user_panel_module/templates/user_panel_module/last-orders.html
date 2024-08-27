@@ -1,0 +1,147 @@
+{% extends "shared/_layout.html" %}
+{% load poll_extras %}
+
+{% block content %}
+
+<!--============ start main content ==============-->
+
+<section class="content my-25">
+    <div class="container-fluid">
+        <div class="row">
+            {% include "user_panel_module/include/profile-sidebar.html" %}
+            <div class="col-lg-9">
+                <div class="product-slider-box-title">
+                    <h4 class="title-font product-slider-box-title-title dot">
+                        <span class="main-color-one-color">آخرین</span>
+                        <span>سفارشات</span>
+                    </h4>
+                </div>
+                <div class="alert slider-parent bg-white mt-5 shadow-box rounded-4">
+                    <div class="tab-product-nav tab-panel-tbl  p-3 rounded-3">
+                        <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link btn border-bottom-0 active" id="latest-order" data-bs-toggle="tab" data-bs-target="#latest-order-pane" type="button" role="tab" aria-controls="latest-order-pane" aria-selected="true">آخرین سفارشات</button>
+                            </li>
+                            {% if favorites %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link btn border-bottom-0" id="favorite-product" data-bs-toggle="tab" data-bs-target="#favorite-product-pane" type="button" role="tab" aria-controls="favorite-product-pane" aria-selected="false" tabindex="-1">علاقه مندی ها</button>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="tab-content tab-product-content" id="myTabContent">
+                        <div class="tab-pane fade active show" id="latest-order-pane" role="tabpanel" aria-labelledby="latest-order" tabindex="0">
+                            <div class="panel-latest-order">
+                                <div class="table-responsive roundedTable p-0">
+                                    <table class="table table-bordered main-table rounded-0">
+                                        <tbody>
+                                        {% if not orders %}
+                                            <h3> سفارشی نداشته اید</h3>
+                                        {% for order in orders %}
+                                        <tr>
+                                            
+                                            <td colspan="2" class="align-middle">
+                                                {% for orer_item in orders.order_products.all %}
+                                                <div class="avatar-group d-flex align-items-center justify-content-center assigned-avatar">
+                                                    <div class="avatar avatar-md" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="تی شرت لانگ ورزشی مردانه نوزده نودیک مدل TS1967 WW" data-bs-original-title="تی شرت لانگ ورزشی مردانه نوزده نودیک مدل TS1967 WW">
+                                                        <a href="">
+                                                            <img src="{{orer_item.product.image.url}}" alt="Avatar" class="rounded-circle  pull-up">
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </td>
+                                            
+                                            <td colspan="2" class="align-middle">
+                                                <h5 class="text-overflow-1 mt-2 font-15">
+                                                    شماره سفارش {{order.id}}
+                                                </h5>
+                                            </td>
+                                            <td colspan="2" class="align-middle">
+                                                <div class="d-flex align-items-center">
+                                                    <p class="mb-0 text-muted font-15">کد سفارش</p>
+                                                    <p class="mb-0 ms-2 font-12 fw-bold">{{order.order_code}}</p>
+                                                </div>
+                                                <p class="mb-0 text-muted mt-2 font-14">{{order.order_date}}</p>
+                                            </td>
+                                            <td colspan="2" class="align-middle">
+                                                <div class="d-flex align-items-center">
+                                                    <p class="mb-0 text-muted font-15">مبلغ</p>
+                                                    <p class="mb-0 ms-2 fw-bold font-14">{{order.final_price}}</p>
+                                                </div>
+                                                <p class="mb-0 fw-bold mt-2 font-14"><i class="bi bi-check-circle-fill me-1 main-color-three-color"></i>
+                                                    تحویل داده شده</p>
+                                            </td>
+                                            <td colspan="2" class="align-middle">
+                                                <div class="text-center">
+                                                    <a href="" class="btn main-color-one-bg">مشاهده</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="pagination mt-5 pagination-2 justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="pageitem">قبلی</a>
+                                {% endif %}
+                                {% for number in paginator.page_range %}
+                                <a href="?page={{ number }}" {% if page_obj.number == number %}class='active'{% endif %}>{{number}}</a>
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="pageitem">بعدی</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="favorite-product-pane" role="tabpanel" aria-labelledby="latest-order" tabindex="0">
+                            <nav class="navbar navbar-expand">
+                                <ul class="row navbar-nav gy-3 ps-0 mt-4">
+                                    {% for product in favorites %}
+                                    <li class="col-sm-6">
+                                        <div class="cart-canvas border rounded-3 p-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-4 ps-0">
+                                                    <img src="{{product.image.url}}" alt="">
+                                                </div>
+                                                <div class="col-8">
+                                                    <h3 class="text-overflow-2 font-16">
+                                                        {{product.short_description}}
+                                                    </h3>
+                                                    <div class="product-box-suggest-price my-2  d-flex align-items-center justify-content-between">
+                                                        <ins class="font-25 ms-0">{{product.price|three_digits_currency}}<span>تومان</span></ins>
+                                                    </div>
+                                                    <div class="cart-canvas-foot d-flex align-items-center justify-content-between">
+                                                        <div class="cart-canvas-delete">
+                                                            <form id="delete-form" method="post" action="{% url 'user-panel-favorite-products' %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" id="product_id" name="product_id" value=""/>
+                                                            </form>
+                                                            
+                                                            <a href="javascript:void(0);" onclick="fillProductId({{product.id}})" class="btn">
+                                                                <i  class="bi bi-x"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--============ end main content ==============-->
+
+{% endblock content %}
+

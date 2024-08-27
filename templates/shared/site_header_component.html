@@ -1,0 +1,277 @@
+<header>
+    <div class="container-fluid">
+        <div class="row py-3 gy-4 align-items-center">
+            <div class="col-lg-2 col-6 order-lg-1 order-1">
+                <div class="d-flex">
+                    <div class="responsive-menu me-2 d-lg-none d-block">
+                        <button class="btn border-0 p-0 btn-responsive-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#responsiveMenu" aria-controls="responsive menu">
+                            <i class="bi bi-list font-30"></i>
+                        </button>
+                        <div class="offcanvas offcanvas-start" tabindex="-1" id="responsiveMenu" aria-labelledby="responsive menu">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasRightLabel">فروشگاه یلدا</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <a href="{% url 'home-page' %}" class="text-center d-block mb-3">
+                                    <img src="/static/assets/image/logo.png" alt="" class="img-fluid menu-responsive-logo">
+                                </a>
+                                <div class="header-bottom-form mb-4 w-100">
+                                    <div class="search-bar">
+                                        <form action="">
+                                            <div class="search-filed w-100">
+                                                <label class="d-block border border-1 rounded-pill">
+                                                    <input type="text" placeholder="جستجوی محصولات ..." class="form-control bg-white search-input">
+                                                </label>
+                                                <button type="submit" class="btn search-btn main-color-one-bg rounded-pill"><i class="bi bi-search"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <ul class="rm-item-menu navbar-nav">
+                                    <li class="nav-item bg-ul-f7"><a href="{% url 'home-page' %}" class="nav-link">صفحه
+                                        اصلی</a>
+                                    </li>
+                                    <li class="nav-item bg-ul-f7">
+                                        <a href="" class="nav-link">گوشی موبایل</a>
+                                        <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                        <ul class="navbar-nav h-0">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">برند</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">سامسونگ</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">هوآوی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">شیائومی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">الجی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">سونی</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">بر اساس رده بندی</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">لمسی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">دکمه ای</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">نظامی</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item bg-ul-f7">
+                                        <a href="" class="nav-link">تبلت</a>
+                                        <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                        <ul class="navbar-nav h-0">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">کشور</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">ژاپن</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">کره
+                                                        جنوبی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">آمریکایی</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">بر اساس رده بندی</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">لمسی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">دانش
+                                                        آموزی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">مخصوص
+                                                        بازی</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item bg-ul-f7">
+                                        <a href="" class="nav-link">لپتاپ</a>
+                                        <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                        <ul class="navbar-nav h-0">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">برند</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">ایسر</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">مایکروسافت</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">ایسوس</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">اپل</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">سونی</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="">بر اساس قیمت</a>
+                                                <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                                <ul class="navbar-nav h-0 bg-ul-f7">
+                                                    <li class="nav-item"><a href="" class="nav-link">ارزان</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">اقتصادی</a>
+                                                    </li>
+                                                    <li class="nav-item"><a href="" class="nav-link">گران</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item bg-ul-f7">
+                                        <a href="" class="nav-link">صفحات</a>
+                                        <span class="showSubMenu"><i class="bi bi-chevron-left"></i></span>
+                                        <ul class="navbar-nav h-0">
+                                            <li><a href="{% url 'home-page' %}">صفحه اصلی</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                محصول</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                دسته
+                                                بندی</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه سبد
+                                                خرید</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                جستجو</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">دسته بندی
+                                                محصولات خطی</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                404</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                ورود</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                ثبت
+                                                نام</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                فراموشی
+                                                رمز
+                                                عبور</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                وبلاگ</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                جزییات
+                                                وبلاگ</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">صفحه
+                                                مقایسه
+                                                محصول</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">پرداخت
+                                                مرحله
+                                                ای</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">پرداخت
+                                                موفق</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">پرداخت
+                                                ناموفق</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">محصول
+                                                ناموجود</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">سبد
+                                                خرید
+                                                خالی</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">
+                                                داشبورد
+                                                کاربری</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">سفارش ها</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">محصولات
+                                                مورد
+                                                علاقه</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="">اطلاعیه</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">نظرات</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">آدرس
+                                                ها</a>
+                                            </li>
+                                            <li class="nav-item"><a class="nav-link" href="">آخرین
+                                                بازدید
+                                                ها</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-logo">
+                        <a href="{% url 'home-page' %}">
+                            <img src="/static/assets/image/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-12 order-lg-2 order-3">
+                <div class="search-bar">
+                    <form action="">
+                        <div class="search-filed w-100">
+                            <label class="d-block border border-1 rounded-pill">
+                                <input type="text" placeholder="جستجوی محصولات ..."
+                                       class="form-control bg-white search-input">
+                            </label>
+                            <button type="submit" class="btn search-btn main-color-one-bg rounded-pill"><i
+                                    class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6 order-lg-3 order-2">
+                <div class="d-flex justify-content-end align-items-center">
+                    {% comment %} basket {% endcomment %}
+                    <div class="position-relative me-3">
+                        {% if request.user.is_authenticated %}
+                        <span class="position-absolute top-0 bg-white rounded-circle wh-20 border-2 border border-primary z-2">{{products_count}}</span>
+                        {% endif %}
+                        <a data-bs-toggle="offcanvas" href="#offcanvasCart" role="button" aria-controls="offcanvasCart" class="btn main-color-green rounded-circle btn-float-cart"><i class="bi bi-bag"></i></a>
+                    </div>
+                    <div class="bg-white header-btn-group shadow-sm rounded-pill">
+                        <div class="dropdown">
+                            <a href="" data-bs-toggle="dropdown" aria-expanded="false" role="button"
+                               class="btn btn-white no-highlight header-register border-0 rounded-pill">
+                                <i class="bi bi-person-circle font-20 text-muted me-1"></i>
+                                <span>حساب کاربری</span>
+                            </a>
+                            <ul class="dropdown-menu flex-column" style="">
+                                <li><a href="{% url 'user-panel-counter' %}" class="dropdown-item"><i class="bi bi-house-door me-2"></i>پروفایل</a>
+                                </li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-cart-check me-2"></i>سفارش های
+                                    من</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-pin-map me-2"></i>آدرس های
+                                    من</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-bell me-2"></i>پیام ها و
+                                    اطلاعیه ها</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-chat-dots me-2"></i>نظرات
+                                    من</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-question-circle me-2"></i>درخواست
+                                    پشتیبانی</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-heart me-2"></i>محصولات مورد
+                                    علاقه</a></li>
+                                <li><a href="" class="dropdown-item"><i class="bi bi-gift me-2"></i>کد های تخفیف
+                                    من</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a href="{% url 'login-out-page' %}" class="dropdown-item mct-hover"><i
+                                        class="bi bi-arrow-right-square me-2"></i>خروج از حساب کاربری</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
